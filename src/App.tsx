@@ -7,6 +7,7 @@ function App() {
   // TODO: replace useState with either context of Zustand
   const [basket, setBasket] = useState<Basket>({
     count: 0,
+    total: 0,
     products: [],
   });
 
@@ -37,6 +38,7 @@ function App() {
       if (isInBasket === -1) {
         return {
           count: currentBasket.count + product.quantity,
+          total: currentBasket.total + product.quantity * product.price,
           products: [...currentBasket.products, product],
         };
       }
@@ -50,8 +52,15 @@ function App() {
             }
       );
 
+      const updatedTotal = updatedProducts.reduce(
+        (accumulator, currentValue) =>
+          accumulator + currentValue.quantity * currentValue.price,
+        0
+      );
+
       return {
         count: currentBasket.count + product.quantity,
+        total: Math.round((updatedTotal + Number.EPSILON) * 100) / 100,
         products: updatedProducts,
       };
     });
@@ -61,7 +70,35 @@ function App() {
 
   return (
     <>
-      <h1>add product to basket</h1>
+      <h1>simple store</h1>
+      <ul>
+        <li>Number of products in basket: {basket.count}</li>
+        <li>Total: {basket.total} USD</li>
+        <li>
+          {basket.count > 0 ? (
+            <>
+              Your basket:
+              <ul>
+                {basket?.products?.map((product) => {
+                  const subtotal =
+                    Math.round(
+                      (product.quantity * product.price + Number.EPSILON) * 100
+                    ) / 100;
+                  return (
+                    <li key={product.id}>
+                      {product.title}, amount: {product.quantity}, price:{' '}
+                      {product.price} USD, subtotal: {subtotal}
+                      USD
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          ) : (
+            'Your basket is empty'
+          )}
+        </li>
+      </ul>
       <ol>
         {products?.map((product) => (
           <ProductItem

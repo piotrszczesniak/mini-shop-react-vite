@@ -7,9 +7,8 @@ type ProductProps = {
 };
 
 const ProductItem = ({ product, handleClick }: ProductProps) => {
-  const { id, title, category, price } = product;
-
   const [quantity, setQuantity] = useState(1);
+  const { id, title, category, price } = product;
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -23,16 +22,8 @@ const ProductItem = ({ product, handleClick }: ProductProps) => {
     quantity,
   };
 
-  const style = {
-    borderRadius: '20px',
-    border: '1px solid grey',
-    marginBottom: '16px',
-    padding: '8px',
-    listStyle: 'none',
-  };
-
   return (
-    <li key={id} style={style}>
+    <li key={id}>
       <h3>{title}</h3>
       <h4>{price}</h4>
       <h5>{category}</h5>

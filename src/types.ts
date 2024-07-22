@@ -15,6 +15,6 @@ export type ProductInBasket = Product & { quantity: number };
 
 export type Basket = {
   count: number;
+  total: number;
   products: ProductInBasket[];
-  // TODO: add total property
 };
