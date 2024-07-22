@@ -1,0 +1,53 @@
+import { useState } from 'react';
+import { Product, ProductInBasket } from '../types';
+
+type ProductProps = {
+  product: Product;
+  handleClick: (product: ProductInBasket) => void;
+};
+
+const ProductItem = ({ product, handleClick }: ProductProps) => {
+  const { id, title, category, price } = product;
+
+  const [quantity, setQuantity] = useState(1);
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= 1 && value <= 99) {
+      setQuantity(value);
+    }
+  };
+
+  const productInBasket = {
+    ...product,
+    quantity,
+  };
+
+  const style = {
+    borderRadius: '20px',
+    border: '1px solid grey',
+    marginBottom: '16px',
+    padding: '8px',
+    listStyle: 'none',
+  };
+
+  return (
+    <li key={id} style={style}>
+      <h3>{title}</h3>
+      <h4>{price}</h4>
+      <h5>{category}</h5>
+      <input
+        type='number'
+        min={1}
+        max={99}
+        value={quantity}
+        name=''
+        id=''
+        onChange={handleValueChange}
+      />
+      <button onClick={() => handleClick(productInBasket)}>add to cart</button>
+    </li>
+  );
+};
+
+export default ProductItem;
