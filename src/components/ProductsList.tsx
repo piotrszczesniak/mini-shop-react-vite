@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import { ProductType } from '../types';
 import ProductItem from './ProductItem';
 import useBasketStore from '../lib/basket-store';
 
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '../utils/getProducts';
+
 const ProductsList = () => {
-  const [products, setProducts] = useState<ProductType[]>();
   const { addToBasket } = useBasketStore();
 
-  useEffect(() => {
-    // TODO: replace fetch with React Query
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const data = await response.json();
+  const { data: products, isLoading } = useQuery<ProductType[]>({ queryKey: ['products'], queryFn: getProducts });
 
-        setProducts(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  if (isLoading) {
+    return 'Loading';
+  }
 
   return (
     <ol>

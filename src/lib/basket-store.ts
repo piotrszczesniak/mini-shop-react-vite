@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import { ProductInBasketType } from '../types';
 
+// TODO: fn to BasketStore --> removeFromBasket
+/**
+ * TODO:
+ * ! add fn removeFromBasket
+ * ! consider adding fn increase/decrease number of quantity
+ * ! configure zustand
+ * ! configure TanStack
+ */
+
 type BasketStore = {
   count: number;
   total: number;
