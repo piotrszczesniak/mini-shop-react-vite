@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductType = {
   id: number;
   title: string;
   price: number;
@@ -11,10 +11,10 @@ export type Product = {
   };
 };
 
-export type ProductInBasket = Product & { quantity: number };
+export type ProductInBasketType = ProductType & { quantity: number };
 
-export type Basket = {
+export type BasketType = {
   count: number;
   total: number;
-  products: ProductInBasket[];
+  products: ProductInBasketType[];
 };

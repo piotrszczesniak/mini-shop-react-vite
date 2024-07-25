@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Product, ProductInBasket } from '../types';
+import { ProductType, ProductInBasketType } from '../types';
 
 type ProductProps = {
-  product: Product;
-  handleClick: (product: ProductInBasket) => void;
+  product: ProductType;
+  onAddToBasket: (product: ProductInBasketType) => void;
 };
 
-const ProductItem = ({ product, handleClick }: ProductProps) => {
+const ProductItem = ({ product, onAddToBasket }: ProductProps) => {
   const [quantity, setQuantity] = useState(1);
   const { id, title, category, price } = product;
 
@@ -27,16 +27,8 @@ const ProductItem = ({ product, handleClick }: ProductProps) => {
       <h3>{title}</h3>
       <h4>{price}</h4>
       <h5>{category}</h5>
-      <input
-        type='number'
-        min={1}
-        max={99}
-        value={quantity}
-        name=''
-        id=''
-        onChange={handleValueChange}
-      />
-      <button onClick={() => handleClick(productInBasket)}>add to cart</button>
+      <input type='number' min={1} max={99} value={quantity} name='' id='' onChange={handleValueChange} />
+      <button onClick={() => onAddToBasket(productInBasket)}>add to cart</button>
     </li>
   );
 };
