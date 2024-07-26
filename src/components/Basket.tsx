@@ -1,7 +1,7 @@
 import useBasketStore from '../lib/basket-store';
 
 const Basket = () => {
-  const { count, products, total } = useBasketStore();
+  const { count, products, total, removeFromBasket } = useBasketStore();
 
   return (
     <ul>
@@ -18,6 +18,7 @@ const Basket = () => {
                   <li key={product.id}>
                     {product.title}, amount: {product.quantity}, price: {product.price} USD, subtotal: {subtotal}
                     USD
+                    <button onClick={() => removeFromBasket({ id: product.id })}>remove from basket</button>
                   </li>
                 );
               })}

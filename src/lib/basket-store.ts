@@ -4,7 +4,6 @@ import { ProductInBasketType } from '../types';
 // TODO: fn to BasketStore --> removeFromBasket
 /**
  * TODO:
- * ! add fn removeFromBasket
  * ! consider adding fn increase/decrease number of quantity
  * ! configure zustand
  * ! configure TanStack
@@ -14,6 +13,7 @@ type BasketStore = {
   count: number;
   total: number;
   products: ProductInBasketType[];
+  removeFromBasket: (productId: Pick<ProductInBasketType, 'id'>) => void;
   addToBasket: (product: ProductInBasketType) => void;
 };
 
@@ -21,7 +21,22 @@ const useBasketStore = create<BasketStore>((set) => ({
   count: 0,
   products: [],
   total: 0,
-  addToBasket: (product: ProductInBasketType) =>
+  removeFromBasket: ({ id }) => {
+    set((state) => {
+      const productToRemove = state.products.find((product) => product.id === id);
+
+      if (!productToRemove) {
+        return state;
+      }
+
+      return {
+        products: state.products.filter((product) => product.id !== id),
+        count: state.count - productToRemove.quantity,
+        total: state.total - productToRemove?.quantity * productToRemove?.price,
+      };
+    });
+  },
+  addToBasket: (product) =>
     set((state) => {
       // check if product is in the basket
       const productIndex = state.products.findIndex((basketProduct) => basketProduct.id === product.id);

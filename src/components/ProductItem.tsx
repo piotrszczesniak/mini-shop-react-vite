@@ -28,7 +28,7 @@ const ProductItem = ({ product, onAddToBasket }: ProductProps) => {
       <h4>{price}</h4>
       <h5>{category}</h5>
       <input type='number' min={1} max={99} value={quantity} name='' id='' onChange={handleValueChange} />
-      <button onClick={() => onAddToBasket(productInBasket)}>add to cart</button>
+      <button onClick={() => onAddToBasket(productInBasket)}>add to basket</button>
     </li>
   );
 };
