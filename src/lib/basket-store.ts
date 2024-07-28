@@ -24,8 +24,8 @@ type BasketStore = {
 
 const useBasketStore = create<BasketStore>((set) => ({
   count: 0,
-  products: [],
   total: 0,
+  products: [],
   increase: ({ id }) => {
     set((state) => {
       const productToUpdate = state.products.find((product) => product.id === id);
@@ -36,7 +36,7 @@ const useBasketStore = create<BasketStore>((set) => ({
 
       return {
         count: state.count + 1,
-        total: state.total + productToUpdate.price * productToUpdate.quantity,
+        total: Math.round((state.total + productToUpdate.price) * 100) / 100,
         products: state.products.map((product) => {
           if (product.id === productToUpdate.id) {
             return {
@@ -60,10 +60,11 @@ const useBasketStore = create<BasketStore>((set) => ({
       }
 
       toast.info('Product removed from the basket');
+
       return {
-        products: state.products.filter((product) => product.id !== id),
         count: state.count - productToRemove.quantity,
-        total: state.total - productToRemove?.quantity * productToRemove?.price,
+        total: Math.round((state.total - productToRemove?.quantity * productToRemove?.price + Number.EPSILON) * 100) / 100,
+        products: state.products.filter((product) => product.id !== id),
       };
     });
   },
@@ -77,7 +78,7 @@ const useBasketStore = create<BasketStore>((set) => ({
         toast.success('Product added to basket successfully!');
         return {
           count: state.count + product.quantity,
-          total: state.total + product.quantity * product.price,
+          total: Math.round((state.total + product.quantity * product.price + Number.EPSILON) * 100) / 100,
           products: [...state.products, product],
         };
       }
@@ -103,7 +104,7 @@ const useBasketStore = create<BasketStore>((set) => ({
       toast.success('Product quantity updated successfully!');
       return {
         count: state.count + product.quantity,
-        total: updatedTotal,
+        total: Math.round((updatedTotal + Number.EPSILON) * 100) / 100,
         products: updatedProducts,
       };
     }),

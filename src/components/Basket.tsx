@@ -21,24 +21,27 @@ const Basket = () => {
                   <td>remove from basket</td>
                 </tr>
               </thead>
-              {products?.map((product) => {
-                const subtotal = Math.round((product.quantity * product.price + Number.EPSILON) * 100) / 100;
-                return (
-                  <tr key={product.id}>
-                    <td>{product.title}</td>
-                    <td>
-                      <button onClick={() => descrease({ id: product.id })}>-</button>
-                      <input type='number' name='' id='' value={product.quantity} />
-                      <button onClick={() => increase({ id: product.id })}>+</button>
-                    </td>
-                    <td>{product.price}</td>
-                    <td>{subtotal}</td>
-                    <td>
-                      <button onClick={() => removeFromBasket({ id: product.id })}>remove from basket</button>
-                    </td>
-                  </tr>
-                );
-              })}
+
+              <tbody>
+                {products?.map((product) => {
+                  const subtotal = Math.round((product.quantity * product.price + Number.EPSILON) * 100) / 100;
+                  return (
+                    <tr key={product.id}>
+                      <td>{product.title}</td>
+                      <td>
+                        <button onClick={() => descrease({ id: product.id })}>-</button>
+                        {product.quantity}
+                        <button onClick={() => increase({ id: product.id })}>+</button>
+                      </td>
+                      <td>{product.price}</td>
+                      <td>{subtotal}</td>
+                      <td>
+                        <button onClick={() => removeFromBasket({ id: product.id })}>remove from basket</button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>
           </>
         ) : (
