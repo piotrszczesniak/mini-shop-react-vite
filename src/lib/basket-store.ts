@@ -1,15 +1,13 @@
 import { create } from 'zustand';
 import { ProductInBasketType } from '../types';
 import { toast } from 'react-toastify';
+import { roundToDecimal } from '../utils/roundToDecimal';
 
-// TODO: fn to BasketStore --> removeFromBasket
 /**
  * TODO:
- * ! add fn decrease number of quantity
  * ! add set quantity number in the basket
  * ! configure zustand
  * ! configure TanStack
- * ! add npm install --save react-toastify
  */
 
 type BasketStore = {
@@ -28,15 +26,18 @@ const useBasketStore = create<BasketStore>((set) => ({
   products: [],
   increase: ({ id }) => {
     set((state) => {
-      const productToUpdate = state.products.find((product) => product.id === id);
+      const productToUpdate = state.products.find(
+        (product) => product.id === id
+      );
 
       if (!productToUpdate) {
         return state;
       }
 
+      toast.info('Product quantity increased!');
       return {
         count: state.count + 1,
-        total: Math.round((state.total + productToUpdate.price) * 100) / 100,
+        total: roundToDecimal(state.total + productToUpdate.price),
         products: state.products.map((product) => {
           if (product.id === productToUpdate.id) {
             return {
@@ -50,10 +51,47 @@ const useBasketStore = create<BasketStore>((set) => ({
       };
     });
   },
-  descrease: ({ id }) => console.log(id),
+  descrease: ({ id }) => {
+    set((state) => {
+      const productToUpdate = state.products.find(
+        (product) => product.id === id
+      );
+
+      if (!productToUpdate) {
+        return state;
+      }
+
+      if (productToUpdate.quantity === 1) {
+        toast.info('Product removed from the basket');
+        return {
+          count: state.count - 1,
+          total: roundToDecimal(state.total - productToUpdate.price),
+          products: state.products.filter((product) => product.id !== id),
+        };
+      }
+
+      toast.info('Product quantity decreased!');
+      return {
+        count: state.count - 1,
+        total: roundToDecimal(state.total - productToUpdate.price),
+        products: state.products.map((product) => {
+          if (product.id === productToUpdate.id) {
+            return {
+              ...productToUpdate,
+              quantity: productToUpdate.quantity - 1,
+            };
+          } else {
+            return product;
+          }
+        }),
+      };
+    });
+  },
   removeFromBasket: ({ id }) => {
     set((state) => {
-      const productToRemove = state.products.find((product) => product.id === id);
+      const productToRemove = state.products.find(
+        (product) => product.id === id
+      );
 
       if (!productToRemove) {
         return state;
@@ -63,7 +101,9 @@ const useBasketStore = create<BasketStore>((set) => ({
 
       return {
         count: state.count - productToRemove.quantity,
-        total: Math.round((state.total - productToRemove?.quantity * productToRemove?.price + Number.EPSILON) * 100) / 100,
+        total: roundToDecimal(
+          state.total - productToRemove?.quantity * productToRemove?.price
+        ),
         products: state.products.filter((product) => product.id !== id),
       };
     });
@@ -71,14 +111,16 @@ const useBasketStore = create<BasketStore>((set) => ({
   addToBasket: (product) =>
     set((state) => {
       // check if product is in the basket
-      const productIndex = state.products.findIndex((basketProduct) => basketProduct.id === product.id);
+      const productIndex = state.products.findIndex(
+        (basketProduct) => basketProduct.id === product.id
+      );
 
       // case when product insnt in the basket
       if (productIndex === -1) {
         toast.success('Product added to basket successfully!');
         return {
           count: state.count + product.quantity,
-          total: Math.round((state.total + product.quantity * product.price + Number.EPSILON) * 100) / 100,
+          total: roundToDecimal(state.total + product.quantity * product.price),
           products: [...state.products, product],
         };
       }
@@ -97,14 +139,15 @@ const useBasketStore = create<BasketStore>((set) => ({
       );
 
       const updatedTotal = updatedProducts.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.quantity * currentValue.price,
+        (accumulator, currentValue) =>
+          accumulator + currentValue.quantity * currentValue.price,
         0
       );
 
       toast.success('Product quantity updated successfully!');
       return {
         count: state.count + product.quantity,
-        total: Math.round((updatedTotal + Number.EPSILON) * 100) / 100,
+        total: roundToDecimal(updatedTotal),
         products: updatedProducts,
       };
     }),
